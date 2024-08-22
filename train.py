@@ -162,8 +162,9 @@ def main(
 
     # Load scheduler, tokenizer and models.
     noise_scheduler = DDIMScheduler(**OmegaConf.to_container(noise_scheduler_kwargs))
-
-    vae          = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae")
+    
+    vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae", torch_dtype=torch.bfloat16).to("cuda")
+    #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae")
     tokenizer    = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer")
     text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder")
     if not image_finetune:
