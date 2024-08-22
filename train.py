@@ -41,6 +41,7 @@ from animatediff.utils.util import save_videos_grid, zero_rank_print
 
 revision = "refs/heads/main"
 bfl_repo = "black-forest-labs/FLUX.1-dev"
+dtype = torch.bfloat16
 
 
 def init_dist(launcher="slurm", backend='nccl', port=29500, **kwargs):
