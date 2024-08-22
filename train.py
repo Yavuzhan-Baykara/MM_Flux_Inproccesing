@@ -39,6 +39,8 @@ from animatediff.models.unet import UNet3DConditionModel
 from animatediff.pipelines.pipeline_animation import AnimationPipeline
 from animatediff.utils.util import save_videos_grid, zero_rank_print
 
+revision = "refs/heads/main"
+bfl_repo = "black-forest-labs/FLUX.1-dev"
 
 
 def init_dist(launcher="slurm", backend='nccl', port=29500, **kwargs):
@@ -162,8 +164,10 @@ def main(
 
     # Load scheduler, tokenizer and models.
     noise_scheduler = DDIMScheduler(**OmegaConf.to_container(noise_scheduler_kwargs))
+
     
-    vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae", torch_dtype=torch.bfloat16).to("cuda")
+    vae = AutoencoderKL.from_pretrained(bfl_repo, subfolder="vae", torch_dtype=dtype, revision=revision)
+    #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae", torch_dtype=torch.bfloat16).to("cuda")
     #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae")
     tokenizer    = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer")
     text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder")
