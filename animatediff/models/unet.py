@@ -481,6 +481,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         from diffusers.models.modeling_utils import SAFETENSORS_WEIGHTS_NAME, WEIGHTS_NAME
         from diffusers.utils import is_torch_available
         print(SAFETENSORS_WEIGHTS_NAME)
+        print(is_torch_available)
         is_safetensors_available = is_torch_available
         DIFFUSERS_CACHE = "/root/.cache/huggingface/diffusers"
 
