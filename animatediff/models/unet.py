@@ -482,7 +482,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         WEIGHTS_NAME = "Nones"
         SAFETENSORS_WEIGHTS_NAME = "diffusion_pytorch_model.safetensors"
         DIFFUSERS_CACHE = "/root/.cache/huggingface/diffusers"
-        from diffusers.modeling_utils import load_state_dict
+        from diffusers.models.modeling_utils import load_state_dict
         print(f"loaded 3D unet's pretrained weights from {pretrained_model_name_or_path} ...")
 
         cache_dir = kwargs.pop("cache_dir", DIFFUSERS_CACHE)
