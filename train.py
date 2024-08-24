@@ -167,9 +167,9 @@ def main(
     noise_scheduler = DDIMScheduler(**OmegaConf.to_container(noise_scheduler_kwargs))
 
     
-    text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder")
-    tokenizer    = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer")
-    #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae")
+    text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder", revision=revision)
+    tokenizer    = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer", revision=revision)
+    vae          = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae", revision=revision)
     #vae = AutoencoderKL.from_pretrained(bfl_repo, subfolder="vae", torch_dtype=dtype, revision=revision)
     #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae", torch_dtype=torch.bfloat16).to("cuda")
     #vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder='vae').to(device)
