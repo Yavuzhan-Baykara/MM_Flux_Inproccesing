@@ -477,7 +477,8 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
     @classmethod
     def from_pretrained_2d(cls, pretrained_model_name_or_path, unet_additional_kwargs={}, **kwargs):
         from diffusers import __version__
-        from diffusers.utils import DIFFUSERS_CACHE, SAFETENSORS_WEIGHTS_NAME, WEIGHTS_NAME, is_safetensors_available
+        from diffusers.utils.torch_utils import DIFFUSERS_CACHE, SAFETENSORS_WEIGHTS_NAME, WEIGHTS_NAME, is_safetensors_available
+        
         from diffusers.modeling_utils import load_state_dict
         print(f"loaded 3D unet's pretrained weights from {pretrained_model_name_or_path} ...")
 
