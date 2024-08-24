@@ -39,7 +39,7 @@ from animatediff.models.unet import UNet3DConditionModel
 from animatediff.pipelines.pipeline_animation import AnimationPipeline
 from animatediff.utils.util import save_videos_grid, zero_rank_print
 
-revision = "refs/heads/main"
+revision = "refs/pr/1"
 bfl_repo = "black-forest-labs/FLUX.1-dev"
 dtype = torch.bfloat16
 
