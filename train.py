@@ -171,8 +171,8 @@ def main(
     #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae")
     text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder")
     tokenizer    = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer")
-    #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae", torch_dtype=torch.bfloat16).to("cuda")
-    vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder='vae').to(device)
+    vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae", torch_dtype=torch.bfloat16).to("cuda")
+    #vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder='vae').to(device)
     
     if not image_finetune:
         unet = UNet3DConditionModel.from_pretrained_2d(
