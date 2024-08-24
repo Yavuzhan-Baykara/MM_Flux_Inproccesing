@@ -509,12 +509,14 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
         model_file = None
         from diffusers.models.modeling_utils import _get_model_file
-
+        pretrained_model_name_or_path = "black-forest-labs/FLUX.1-schnell"
+        subfolder = "transformer"
+        weights_name = "diffusion_pytorch_model-00003-of-00003.safetensors"
         if is_safetensors_available():
             try:
                 model_file = _get_model_file(
                     pretrained_model_name_or_path,
-                    weights_name=SAFETENSORS_WEIGHTS_NAME,
+                    weights_name=weights_name,
                     cache_dir=cache_dir,
                     force_download=force_download,
                     #resume_download=resume_download,
