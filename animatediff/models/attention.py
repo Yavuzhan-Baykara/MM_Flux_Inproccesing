@@ -226,7 +226,7 @@ class BasicTransformerBlock(nn.Module):
             nn.init.zeros_(self.attn_temp.to_out[0].weight.data)
             self.norm_temp = AdaLayerNorm(dim, num_embeds_ada_norm) if self.use_ada_layer_norm else nn.LayerNorm(dim)
 
-    def set_use_memory_efficient_attention_xformers(self, use_memory_efficient_attention_xformers: bool):
+    def set_use_memory_efficient_attention_xformers(self, use_memory_efficient_attention_xformers: bool, attention_op: Optional[Callable] = None):
         if not is_xformers_available():
             print("Here is how to install it")
             raise ModuleNotFoundError(
@@ -246,6 +246,7 @@ class BasicTransformerBlock(nn.Module):
                     torch.randn((1, 2, 40), device="cuda"),
                     torch.randn((1, 2, 40), device="cuda"),
                     torch.randn((1, 2, 40), device="cuda"),
+                    op=attention_op  # attention_op burada kullanılıyor
                 )
             except Exception as e:
                 raise e
