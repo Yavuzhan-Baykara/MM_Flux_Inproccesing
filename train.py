@@ -223,7 +223,7 @@ def main(
         if is_xformers_available():
             import diffusers
             print(diffusers.__version__)
-            print(BasicTransformerBlock.set_use_memory_efficient_attention_xformers.__code__.co_varnames)
+            print(unet.set_use_memory_efficient_attention_xformers.__code__.co_varnames)
             unet.enable_xformers_memory_efficient_attention()
         else:
             raise ValueError("xformers is not available. Make sure it is installed correctly")
