@@ -91,6 +91,10 @@ class AnimationPipeline(DiffusionPipeline):
         is_unet_version_less_0_9_0 = hasattr(unet.config, "_diffusers_version") and version.parse(
             version.parse(unet.config._diffusers_version).base_version
         ) < version.parse("0.9.0.dev0")
+        print(f"Sample size from unet.config: {unet.config.sample_size}")
+        if not hasattr(unet.config, "sample_size") or unet.config.sample_size is None:
+            unet.config.sample_size = 32  # Manuel olarak sample_size değeri belirleyin
+
         is_unet_sample_size_less_64 = hasattr(unet.config, "sample_size") and unet.config.sample_size < 64
         if is_unet_version_less_0_9_0 and is_unet_sample_size_less_64:
             deprecation_message = (
