@@ -166,7 +166,7 @@ def main(
     # Load scheduler, tokenizer and models.
     noise_scheduler = DDIMScheduler(**OmegaConf.to_container(noise_scheduler_kwargs))
 
-    
+    pretrained_model_path = "black-forest-labs/FLUX.1-schnell"
     text_encoder = CLIPTextModel.from_pretrained(pretrained_model_path, subfolder="text_encoder", revision=revision)
     tokenizer    = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer", revision=revision)
     #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae", revision=revision)
