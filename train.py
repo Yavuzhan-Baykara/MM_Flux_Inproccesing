@@ -222,7 +222,7 @@ def main(
     if enable_xformers_memory_efficient_attention:
         if is_xformers_available():
             from xformers.ops import MemoryEfficientAttentionFlashAttentionOp
-            unet.enable_xformers_memory_efficient_attention(True, attention_op=MemoryEfficientAttentionFlashAttentionOp)
+            unet.enable_xformers_memory_efficient_attention(attention_op=None)
 
         else:
             raise ValueError("xformers is not available. Make sure it is installed correctly")
