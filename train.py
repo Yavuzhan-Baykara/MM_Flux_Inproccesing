@@ -172,7 +172,12 @@ def main(
     #vae = AutoencoderKL.from_pretrained(bfl_repo, subfolder="vae", torch_dtype=dtype, revision=revision)
     vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae").to("cuda")
     #vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder='vae').to(device)
+    import pprint
+    # unet_additional_kwargs'i bir Python sözlüğüne dönüştür
+    unet_kwargs_dict = OmegaConf.to_container(unet_additional_kwargs, resolve=True)
     
+    # pprint ile daha okunaklı bir şekilde yazdır
+    pprint.pprint(unet_kwargs_dict)
     if not image_finetune:
         unet = UNet3DConditionModel.from_pretrained_2d(
             pretrained_model_path, subfolder="unet", 
