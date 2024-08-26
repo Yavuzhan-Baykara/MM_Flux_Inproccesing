@@ -51,11 +51,9 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         unet_use_temporal_attention=None,
     ):
         super().__init__()
-        attention_head_dim = attention_head_dim if attention_head_dim > 0 else 64  # 64 burada varsayılan değer
         self.use_linear_projection = use_linear_projection
         self.num_attention_heads = num_attention_heads
         self.attention_head_dim = attention_head_dim
-        print(attention_head_dim)
         inner_dim = num_attention_heads * attention_head_dim
 
         # Define input layers
