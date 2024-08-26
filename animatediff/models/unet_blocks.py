@@ -338,10 +338,12 @@ class CrossAttnDownBlock3D(nn.Module):
             )
             if dual_cross_attention:
                 raise NotImplementedError
+            print(out_channels // attn_num_head_channels)
+            print(out_channels, attn_num_head_channels)
             attentions.append(
                 Transformer3DModel(
                     attn_num_head_channels,
-                    out_channels) // attn_num_head_channels,
+                    out_channels // attn_num_head_channels,
                     in_channels=out_channels,
                     num_layers=1,
                     cross_attention_dim=cross_attention_dim,
@@ -583,6 +585,7 @@ class CrossAttnUpBlock3D(nn.Module):
             )
             if dual_cross_attention:
                 raise NotImplementedError
+            print(out_channels // attn_num_head_channels)
             attentions.append(
                 Transformer3DModel(
                     attn_num_head_channels,
