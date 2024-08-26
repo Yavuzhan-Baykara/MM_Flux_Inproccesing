@@ -54,6 +54,8 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         self.use_linear_projection = use_linear_projection
         self.num_attention_heads = num_attention_heads
         self.attention_head_dim = attention_head_dim
+        print(num_attention_heads)
+        print(attention_head_dim)
         inner_dim = num_attention_heads * attention_head_dim
 
         # Define input layers
@@ -179,6 +181,7 @@ class BasicTransformerBlock(nn.Module):
                 upcast_attention=upcast_attention,
             )
         else:
+            print(attention_head_dim)
             self.attn1 = Attention(
                 query_dim=dim,
                 heads=num_attention_heads,
