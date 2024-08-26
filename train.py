@@ -170,7 +170,7 @@ def main(
     tokenizer    = CLIPTokenizer.from_pretrained(pretrained_model_path, subfolder="tokenizer", revision=revision)
     #vae          = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder="vae", revision=revision)
     #vae = AutoencoderKL.from_pretrained(bfl_repo, subfolder="vae", torch_dtype=dtype, revision=revision)
-    vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae", torch_dtype=torch.bfloat16).to("cuda")
+    vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae").to("cuda")
     #vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder='vae').to(device)
     
     if not image_finetune:
