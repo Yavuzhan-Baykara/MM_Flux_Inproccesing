@@ -364,6 +364,9 @@ def main(
             
             # Add noise to the latents according to the noise magnitude at each timestep
             # (this is the forward diffusion process)
+            print("latents: " + str(latents))
+            print("noise: " + str(noise))
+            print("timesteps: " + str(timesteps))
             noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
             
             # Get the text embedding for conditioning
