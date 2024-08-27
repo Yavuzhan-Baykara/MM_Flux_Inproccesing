@@ -178,6 +178,18 @@ def main(
             pretrained_model_path, subfolder="unet", 
             unet_additional_kwargs=OmegaConf.to_container(unet_additional_kwargs)
         )
+        
+        print("unet_additional_kwargs:", OmegaConf.to_container(unet_additional_kwargs))
+        print("\n--- UNet Model Configuration ---")
+        print("Model Type:", type(unet))
+        print("Input Channels:", unet.in_channels if hasattr(unet, 'in_channels') else "N/A")
+        print("Output Channels:", unet.out_channels if hasattr(unet, 'out_channels') else "N/A")
+        print("Number of Parameters:", sum(p.numel() for p in unet.parameters()))
+
+# Modeldeki katmanlar hakkında bilgi verin
+print("\n--- UNet Model Layers ---")
+for name, layer in unet.named_modules():
+    print(f"Layer Name: {name}, Layer Type: {type(layer)}")
     else:
         print("UNet2DConditionModel Aktif")
         unet = UNet2DConditionModel.from_pretrained(pretrained_model_path, subfolder="unet")
