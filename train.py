@@ -173,25 +173,11 @@ def main(
     vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae").to("cuda")
     #vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder='vae').to(device)
     if not image_finetune:
-        print("UNet3DConditionModel Aktif")
         unet = UNet3DConditionModel.from_pretrained_2d(
             pretrained_model_path, subfolder="unet", 
             unet_additional_kwargs=OmegaConf.to_container(unet_additional_kwargs)
         )
-        
-        print("unet_additional_kwargs:", OmegaConf.to_container(unet_additional_kwargs))
-        print("\n--- UNet Model Configuration ---")
-        print("Model Type:", type(unet))
-        print("Input Channels:", unet.in_channels if hasattr(unet, 'in_channels') else "N/A")
-        print("Output Channels:", unet.out_channels if hasattr(unet, 'out_channels') else "N/A")
-        print("Number of Parameters:", sum(p.numel() for p in unet.parameters()))
-
-# Modeldeki katmanlar hakkında bilgi verin
-print("\n--- UNet Model Layers ---")
-for name, layer in unet.named_modules():
-    print(f"Layer Name: {name}, Layer Type: {type(layer)}")
     else:
-        print("UNet2DConditionModel Aktif")
         unet = UNet2DConditionModel.from_pretrained(pretrained_model_path, subfolder="unet")
         
     # Load pretrained unet weights
@@ -357,7 +343,6 @@ for name, layer in unet.named_modules():
             with torch.no_grad():
                 if not image_finetune:
                     pixel_values = rearrange(pixel_values, "b f c h w -> (b f) c h w")
-                    print("pixel_values" + str(pixel_values.shape)
                     latents = vae.encode(pixel_values).latent_dist
                     latents = latents.sample()
                     latents = rearrange(latents, "(b f) c h w -> b c f h w", f=video_length)
@@ -377,11 +362,6 @@ for name, layer in unet.named_modules():
             
             # Add noise to the latents according to the noise magnitude at each timestep
             # (this is the forward diffusion process)
-            print()
-            print("latents: " + str(latents.shape))
-            print("noise: " + str(noise.shape))
-            print("timesteps: " + str(timesteps.shape))
-            print()
             noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
             
             # Get the text embedding for conditioning
@@ -402,11 +382,6 @@ for name, layer in unet.named_modules():
             # Predict the noise residual and compute loss
             # Mixed-precision training
             with torch.cuda.amp.autocast(enabled=mixed_precision_training):
-                print()
-                print(noisy_latents.shape)
-                print(timesteps.shape)
-                print(encoder_hidden_states.shape)
-                print()
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
 
