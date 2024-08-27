@@ -173,11 +173,13 @@ def main(
     vae          = AutoencoderKL.from_pretrained(pretrained_model_path, revision="refs/pr/1", subfolder="vae").to("cuda")
     #vae = AutoencoderKL.from_pretrained(pretrained_model_path, subfolder='vae').to(device)
     if not image_finetune:
+        print("UNet3DConditionModel Aktif")
         unet = UNet3DConditionModel.from_pretrained_2d(
             pretrained_model_path, subfolder="unet", 
             unet_additional_kwargs=OmegaConf.to_container(unet_additional_kwargs)
         )
     else:
+        print("UNet2DConditionModel Aktif")
         unet = UNet2DConditionModel.from_pretrained(pretrained_model_path, subfolder="unet")
         
     # Load pretrained unet weights
@@ -382,9 +384,11 @@ def main(
             # Predict the noise residual and compute loss
             # Mixed-precision training
             with torch.cuda.amp.autocast(enabled=mixed_precision_training):
+                print()
                 print(noisy_latents.shape)
                 print(timesteps.shape)
                 print(encoder_hidden_states.shape)
+                print()
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
 
