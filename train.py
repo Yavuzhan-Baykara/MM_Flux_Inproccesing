@@ -321,8 +321,8 @@ def main(
         unet.train()
         
         for step, batch in enumerate(train_dataloader):
-            print("batch": batch.shape)
-            print("step": step.shape)
+            print("batch:" + batch.shape)
+            print("step:" + step.shape)
             
             if cfg_random_null_text:
                 batch['text'] = [name if random.random() > cfg_random_null_text_ratio else "" for name in batch['text']]
