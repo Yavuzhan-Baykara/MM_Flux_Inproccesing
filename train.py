@@ -321,6 +321,9 @@ def main(
         unet.train()
         
         for step, batch in enumerate(train_dataloader):
+            print("batch": batch.shape)
+            print("step": step.shape)
+            
             if cfg_random_null_text:
                 batch['text'] = [name if random.random() > cfg_random_null_text_ratio else "" for name in batch['text']]
                 
@@ -364,9 +367,11 @@ def main(
             
             # Add noise to the latents according to the noise magnitude at each timestep
             # (this is the forward diffusion process)
+            print()
             print("latents: " + str(latents.shape))
             print("noise: " + str(noise.shape))
             print("timesteps: " + str(timesteps.shape))
+            print()
             noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
             
             # Get the text embedding for conditioning
