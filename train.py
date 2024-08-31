@@ -347,18 +347,18 @@ def main(
                     print("pixel_values shape: ", str(pixel_values.shape))
                     latents = vae.encode(pixel_values).latent_dist
                     print()
-                    print("latents shape2 : ", str(latents.shape))
+                    print("latents2 : ", str(latents))
                     latents = latents.sample()
                     print()
-                    print("latents shape3 : ", str(latents.shape))
+                    print("latents3 : ", str(latents))
                     latents = rearrange(latents, "(b f) c h w -> b c f h w", f=video_length)
                     print()
-                    print("latents shape4 : ", str(latents.shape))
+                    print("latents4 : ", str(latents))
                 else:
                     latents = vae.encode(pixel_values).latent_dist
-                    print("latents shape5 : ", str(latents.shape))
+                    print("latents5 : ", str(latents))
                     latents = latents.sample()
-                    print("latents shape6 : ", str(latents.shape))
+                    print("latents6 : ", str(latents))
                     
 
                 latents = latents * 0.18215
