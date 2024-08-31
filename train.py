@@ -221,7 +221,7 @@ def main(
     # Enable xformers
     if enable_xformers_memory_efficient_attention:
         if is_xformers_available():
-            unet.enable_xformers_memory_efficient_attention(attention_op="smallkF")
+            unet.enable_xformers_memory_efficient_attention()
         else:
             raise ValueError("xformers is not available. Make sure it is installed correctly")
 
