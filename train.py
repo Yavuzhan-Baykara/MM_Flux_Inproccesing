@@ -343,16 +343,23 @@ def main(
             with torch.no_grad():
                 if not image_finetune:
                     pixel_values = rearrange(pixel_values, "b f c h w -> (b f) c h w")
+                    print()
                     print("pixel_values shape: ", str(pixel_values.shape))
                     latents = vae.encode(pixel_values).latent_dist
-                    print("latents shape : ", str(latents.shape))
+                    print()
+                    print("latents shape2 : ", str(latents.shape))
                     latents = latents.sample()
-                    print("latents shape: ", str(latents.shape))
+                    print()
+                    print("latents shape3 : ", str(latents.shape))
                     latents = rearrange(latents, "(b f) c h w -> b c f h w", f=video_length)
-                    print("latents shape : ", str(latents.shape))
+                    print()
+                    print("latents shape4 : ", str(latents.shape))
                 else:
                     latents = vae.encode(pixel_values).latent_dist
+                    print("latents shape5 : ", str(latents.shape))
                     latents = latents.sample()
+                    print("latents shape6 : ", str(latents.shape))
+                    
 
                 latents = latents * 0.18215
 
