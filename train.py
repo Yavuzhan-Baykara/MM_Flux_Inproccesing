@@ -409,10 +409,6 @@ def main(
                 print(noisy_latents.shape)
                 print(timesteps.shape)
                 print(encoder_hidden_states.shape)
-
-                latents = latents.to(torch.float32)
-                noise = noise.to(torch.float32)
-
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
                 
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
