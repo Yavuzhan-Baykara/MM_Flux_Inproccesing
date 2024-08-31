@@ -350,10 +350,10 @@ def main(
                     print("latents2 : ", str(latents))
                     latents = latents.sample()
                     print()
-                    print("latents3 : ", str(latents))
+                    print("latents3 shape : ", str(latents.shape))
                     latents = rearrange(latents, "(b f) c h w -> b c f h w", f=video_length)
                     print()
-                    print("latents4 : ", str(latents))
+                    print("latents4 shape : ", str(latents.shape))
                 else:
                     latents = vae.encode(pixel_values).latent_dist
                     print("latents5 : ", str(latents))
