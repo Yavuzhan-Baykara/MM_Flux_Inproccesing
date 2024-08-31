@@ -340,6 +340,7 @@ def main(
             # Convert videos to latent space            
             pixel_values = batch["pixel_values"].to(local_rank)
             video_length = pixel_values.shape[1]
+            print("video_length A: ", str(video_length))
             with torch.no_grad():
                 if not image_finetune:
                     pixel_values = rearrange(pixel_values, "b f c h w -> (b f) c h w")
@@ -469,6 +470,8 @@ def main(
                             width        = width,
                             **validation_data,
                         ).videos
+                        print()
+                        print("train_data.sample_n_frames A: ", str(train_data.sample_n_frames))
                         save_videos_grid(sample, f"{output_dir}/samples/sample-{global_step}/{idx}.gif")
                         samples.append(sample)
                         
