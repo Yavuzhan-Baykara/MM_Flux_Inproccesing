@@ -219,10 +219,9 @@ def main(
         zero_rank_print(f"trainable params scale: {sum(p.numel() for p in trainable_params) / 1e6:.3f} M")
 
     # Enable xformers
-    from xformers.ops import MemoryEfficientAttentionFlashAttentionOp
     if enable_xformers_memory_efficient_attention:
         if is_xformers_available():
-            unet.enable_xformers_memory_efficient_attention(attention_op=MemoryEfficientAttentionFlashAttentionOp)
+            unet.enable_xformers_memory_efficient_attention(attention_op="smallkF")
         else:
             raise ValueError("xformers is not available. Make sure it is installed correctly")
 
