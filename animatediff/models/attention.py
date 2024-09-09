@@ -34,7 +34,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
     def __init__(
         self,
         num_attention_heads: int = 16,
-        attention_head_dim: int = 80,  # 1280'e uygun hale getirmek için
+        attention_head_dim: int = 70,  # 1280'e uygun hale getirmek için
         in_channels: Optional[int] = None,
         num_layers: int = 1,
         dropout: float = 0.0,
