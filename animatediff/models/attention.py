@@ -104,8 +104,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         residual = hidden_states
 
         hidden_states = self.norm(hidden_states)
-        print(f"hidden_states shape: {hidden_states.shape}")
-        print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
+        
         if not self.use_linear_projection:
             hidden_states = self.proj_in(hidden_states)
             inner_dim = hidden_states.shape[1]
@@ -114,7 +113,8 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             inner_dim = hidden_states.shape[1]
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
             hidden_states = self.proj_in(hidden_states)
-
+        print(f"hidden_states shape: {hidden_states.shape}")
+        print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
         # Blocks
         for block in self.transformer_blocks:
             hidden_states = block(
