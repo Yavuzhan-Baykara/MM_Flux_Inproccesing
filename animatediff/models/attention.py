@@ -34,19 +34,18 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
     def __init__(
         self,
         num_attention_heads: int = 16,
-        attention_head_dim: int = 88,
+        attention_head_dim: int = 80,  # 1280'e uygun hale getirmek için
         in_channels: Optional[int] = None,
         num_layers: int = 1,
         dropout: float = 0.0,
         norm_num_groups: int = 32,
-        cross_attention_dim: Optional[int] = None,
+        cross_attention_dim: Optional[int] = 768,  # CLIP Text Encoder'dan gelen boyuta göre
         attention_bias: bool = False,
         activation_fn: str = "geglu",
         num_embeds_ada_norm: Optional[int] = None,
         use_linear_projection: bool = False,
         only_cross_attention: bool = False,
         upcast_attention: bool = False,
-
         unet_use_cross_frame_attention=None,
         unet_use_temporal_attention=None,
     ):
