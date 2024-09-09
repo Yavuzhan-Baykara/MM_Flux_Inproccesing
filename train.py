@@ -404,7 +404,7 @@ def main(
 
             # Predict the noise residual and compute loss
             # Mixed-precision training
-            with torch.cuda.amp.autocast(enabled=mixed_precision_training):
+            with torch.cuda.amp.autocast(enabled=mixed_precision_training, dtype=torch.float32):
                 print()
                 print(noisy_latents.shape)
                 print(timesteps.shape)
