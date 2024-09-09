@@ -392,7 +392,7 @@ def main(
                 prompt_ids = tokenizer(
                     batch['text'], max_length=tokenizer.model_max_length, padding="max_length", truncation=True, return_tensors="pt"
                 ).input_ids.to(latents.device)
-                print("prompt_ids: ", str(prompt_ids))
+                print("prompt_ids shape: ", str(prompt_ids.shape))
                 encoder_hidden_states = text_encoder(prompt_ids)[0]
                 
             # Get the target for loss depending on the prediction type
