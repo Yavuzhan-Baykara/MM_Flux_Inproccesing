@@ -406,9 +406,9 @@ def main(
             # Mixed-precision training
             with torch.cuda.amp.autocast(enabled=mixed_precision_training, dtype=torch.float32):
                 print()
-                print(noisy_latents.shape)
-                print(timesteps.shape)
-                print(encoder_hidden_states.shape)
+                print("noisy_latents.shape:", str(noisy_latents.shape))
+                print("timesteps.shape:",str(timesteps.shape))
+                print("encoder_hidden_states.shape:", str(encoder_hidden_states.shape))
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
                 
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
