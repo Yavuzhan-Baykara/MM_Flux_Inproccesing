@@ -99,12 +99,13 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         video_length = hidden_states.shape[2]
         hidden_states = rearrange(hidden_states, "b c f h w -> (b f) c h w")
         encoder_hidden_states = repeat(encoder_hidden_states, 'b n c -> (b f) n c', f=video_length)
-        print(f"hidden_states shape: {hidden_states.shape}")
-        print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
+        
         batch, channel, height, weight = hidden_states.shape
         residual = hidden_states
 
         hidden_states = self.norm(hidden_states)
+        print(f"hidden_states shape: {hidden_states.shape}")
+        print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
         if not self.use_linear_projection:
             hidden_states = self.proj_in(hidden_states)
             inner_dim = hidden_states.shape[1]
