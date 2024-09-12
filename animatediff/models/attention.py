@@ -101,8 +101,10 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         #deneme
         # Projeksiyonu burada yapın
         if encoder_hidden_states is not None and encoder_hidden_states.shape[-1] == 1280:
+            print(f"Original encoder_hidden_states shape: {encoder_hidden_states.shape}")
             encoder_hidden_states = torch.nn.Linear(1280, 768).to(encoder_hidden_states.device)(encoder_hidden_states)
-        
+            print(f"Projected encoder_hidden_states shape: {encoder_hidden_states.shape}")
+            
         batch, channel, height, weight = hidden_states.shape
         residual = hidden_states
 
