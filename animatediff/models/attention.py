@@ -290,21 +290,6 @@ class BasicTransformerBlock(nn.Module):
             print("norm_hidden_states: shape", str(norm_hidden_states.shape))
             print(f"hidden_states shape: {hidden_states.shape}")
             print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
-         # hidden_states tensorünü 768 boyutuna projekte etme
-            if hidden_states.shape[-1] == 128:
-                print(f"Original hidden_states shape: {hidden_states.shape}")
-                hidden_states = torch.nn.Linear(128, 768).to(hidden_states.device)(hidden_states)
-                print(f"Projected hidden_states shape: {hidden_states.shape}")
-            
-            # norm_hidden_states hesaplama
-            norm_hidden_states = (
-                self.norm2(hidden_states, timestep) if self.use_ada_layer_norm else self.norm2(hidden_states)
-            )
-            
-            # Projeksiyon sonrası boyutların doğru olduğundan emin olma
-            if norm_hidden_states.shape[-1] != 768:
-                norm_hidden_states = torch.nn.Linear(norm_hidden_states.shape[-1], 768).to(norm_hidden_states.device)(norm_hidden_states)
-
             hidden_states = (
                 self.attn2(
                     norm_hidden_states, encoder_hidden_states=encoder_hidden_states, attention_mask=attention_mask
