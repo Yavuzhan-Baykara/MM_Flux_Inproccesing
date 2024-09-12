@@ -182,7 +182,7 @@ class UNetMidBlock3DCrossAttn(nn.Module):
         resnet_pre_norm: bool = True,
         attn_num_head_channels=1,
         output_scale_factor=1.0,
-        cross_attention_dim=1280,
+        cross_attention_dim=768,
         dual_cross_attention=False,
         use_linear_projection=False,
         upcast_attention=False,
