@@ -290,6 +290,9 @@ class BasicTransformerBlock(nn.Module):
             print("norm_hidden_states: shape", str(norm_hidden_states.shape))
             print(f"hidden_states shape: {hidden_states.shape}")
             print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
+            # hidden_states'i cross_attention_dim ile eşleştir
+            if norm_hidden_states.shape[-1] != 768:
+                norm_hidden_states = torch.nn.Linear(norm_hidden_states.shape[-1], 768).to(norm_hidden_states.device)(norm_hidden_states)
 
             hidden_states = (
                 self.attn2(
