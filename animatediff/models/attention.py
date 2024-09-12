@@ -288,6 +288,8 @@ class BasicTransformerBlock(nn.Module):
             )
             print("timestep", str(timestep))
             print("norm_hidden_states: shape", str(norm_hidden_states.shape))
+            print(f"hidden_states shape: {hidden_states.shape}")
+            print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
 
             hidden_states = (
                 self.attn2(
