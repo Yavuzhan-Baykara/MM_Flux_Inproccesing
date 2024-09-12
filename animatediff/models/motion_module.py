@@ -58,7 +58,7 @@ class VanillaTemporalModule(nn.Module):
         attention_block_types              =( "Temporal_Self", "Temporal_Self" ),
         cross_frame_attention_mode         = None,
         temporal_position_encoding         = False,
-        temporal_position_encoding_max_len = 24,
+        temporal_position_encoding_max_len = 64,
         temporal_attention_dim_div         = 1,
         zero_initialize                    = True,
     ):
@@ -104,7 +104,7 @@ class TemporalTransformer3DModel(nn.Module):
         
         cross_frame_attention_mode         = None,
         temporal_position_encoding         = False,
-        temporal_position_encoding_max_len = 24,
+        temporal_position_encoding_max_len = 64,
     ):
         super().__init__()
 
@@ -231,7 +231,7 @@ class PositionalEncoding(nn.Module):
         self, 
         d_model, 
         dropout = 0., 
-        max_len = 24
+        max_len = 64
     ):
         super().__init__()
         self.dropout = nn.Dropout(p=dropout)
