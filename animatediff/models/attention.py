@@ -296,6 +296,8 @@ class BasicTransformerBlock(nn.Module):
                 )
                 + hidden_states
             )
+            print(f"After attn2 hidden_states shape: {hidden_states.shape}")
+
 
         # Feed-forward
         hidden_states = self.ff(self.norm3(hidden_states)) + hidden_states
