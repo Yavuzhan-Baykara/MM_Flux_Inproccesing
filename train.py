@@ -410,7 +410,6 @@ def main(
                 print("noisy_latents.shape:", str(noisy_latents.shape))
                 print("timesteps.shape:",str(timesteps.shape))
                 print("encoder_hidden_states.shape:", str(encoder_hidden_states.shape))
-                hidden_states = torch.nn.Linear(hidden_states.shape[-1], 768).to(hidden_states.device)(hidden_states)
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
                 
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
