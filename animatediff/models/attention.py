@@ -288,11 +288,6 @@ class BasicTransformerBlock(nn.Module):
             )
             print("timestep", str(timestep))
             print("norm_hidden_states: shape", str(norm_hidden_states.shape))
-            # norm_hidden_states tensorünü 1280'den 768'e projekte et
-            if norm_hidden_states.shape[-1] == 1280:
-                print(f"Original norm_hidden_states shape: {norm_hidden_states.shape}")
-                norm_hidden_states = torch.nn.Linear(1280, 768).to(norm_hidden_states.device)(norm_hidden_states)
-                print(f"Projected norm_hidden_states shape: {norm_hidden_states.shape}")
 
             hidden_states = (
                 self.attn2(
