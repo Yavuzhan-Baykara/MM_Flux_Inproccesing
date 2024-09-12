@@ -292,7 +292,7 @@ class BasicTransformerBlock(nn.Module):
             print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
             hidden_states = (
                 self.attn2(
-                    norm_hidden_states, encoder_hidden_states=encoder_hidden_states, attention_mask=attention_mask
+                    encoder_hidden_states, encoder_hidden_states=encoder_hidden_states, attention_mask=attention_mask
                 )
                 + hidden_states
             )
