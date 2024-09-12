@@ -108,7 +108,10 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             hidden_states = self.proj_in(hidden_states)
             inner_dim = hidden_states.shape[1]
             #deneme
-            hidden_states = torch.nn.Linear(hidden_states.shape[-1], 768).to(hidden_states.device)(hidden_states)
+            print("batch: ", str(batch))
+            print("height * weight,: ", str(height * weight,))
+            print("inner_dim: ", str(inner_dim))
+            
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
         else:
             inner_dim = hidden_states.shape[1]
