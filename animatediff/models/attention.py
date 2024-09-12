@@ -98,12 +98,6 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         video_length = hidden_states.shape[2]
         hidden_states = rearrange(hidden_states, "b c f h w -> (b f) c h w")
         encoder_hidden_states = repeat(encoder_hidden_states, 'b n c -> (b f) n c', f=video_length)
-        #deneme
-        # Projeksiyonu burada yapın
-        print(f"Original encoder_hidden_states shape: {encoder_hidden_states.shape}")
-        encoder_hidden_states = torch.nn.Linear(1280, 768).to(encoder_hidden_states.device)(encoder_hidden_states)
-        print(f"Projected encoder_hidden_states shape: {encoder_hidden_states.shape}")
-            
         batch, channel, height, weight = hidden_states.shape
         residual = hidden_states
 
