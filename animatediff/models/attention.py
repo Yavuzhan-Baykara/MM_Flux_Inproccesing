@@ -280,15 +280,16 @@ class BasicTransformerBlock(nn.Module):
             hidden_states = self.attn1(norm_hidden_states, attention_mask=attention_mask, video_length=video_length) + hidden_states
         else:
             hidden_states = self.attn1(norm_hidden_states, attention_mask=attention_mask) + hidden_states
-
+        print("unet_use_cross_frame_attention - hidden states: ", str(hidden_states))
         if self.attn2 is not None:
             # Cross-Attention
             norm_hidden_states = (
                 self.norm2(hidden_states, timestep) if self.use_ada_layer_norm else self.norm2(hidden_states)
             )
+            print("norm_hidden_states: ", str(norm_hidden_states))
             hidden_states = (
                 self.attn2(
-                    encoder_hidden_states, encoder_hidden_states=encoder_hidden_states, attention_mask=attention_mask
+                    norm_hidden_states, encoder_hidden_states=encoder_hidden_states, attention_mask=attention_mask
                 )
                 + hidden_states
             )
