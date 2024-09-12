@@ -286,6 +286,7 @@ class BasicTransformerBlock(nn.Module):
             norm_hidden_states = (
                 self.norm2(hidden_states, timestep) if self.use_ada_layer_norm else self.norm2(hidden_states)
             )
+            print("timestep", str(timestep))
             print("norm_hidden_states: ", str(norm_hidden_states))
             hidden_states = (
                 self.attn2(
