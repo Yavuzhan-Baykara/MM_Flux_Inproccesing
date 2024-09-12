@@ -231,7 +231,7 @@ class PositionalEncoding(nn.Module):
         self, 
         d_model, 
         dropout = 0., 
-        max_len = 5000
+        max_len = 24
     ):
         super().__init__()
         self.dropout = nn.Dropout(p=dropout)
