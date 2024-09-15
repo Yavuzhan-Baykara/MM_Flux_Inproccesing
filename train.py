@@ -413,7 +413,9 @@ def main(
                 # Encoder hidden states projekte edilerek attention boyutuna indirgeniyor
                 #encoder_hidden_states = torch.nn.Linear(768, 1280).to(encoder_hidden_states.device)(encoder_hidden_states)
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
-                
+                print("noise shape         : ", noise.shape)            # Shape of noise
+                print("model_pred.shape    : ", model_pred.shape)     # Shape of the model prediction (model_pred)
+
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
 
             optimizer.zero_grad()
