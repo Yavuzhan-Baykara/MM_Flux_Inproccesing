@@ -251,7 +251,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
             self.conv_norm_out = nn.GroupNorm(num_channels=block_out_channels[0], num_groups=norm_num_groups, eps=norm_eps)
         self.conv_act = nn.SiLU()
         print("conv_out for: ", "block_out_channels[0]: ", block_out_channels[0], "out_channels:", out_channels)
-              self.conv_out = InflatedConv3d(block_out_channels[0], out_channels, kernel_size=3, padding=1)
+        self.conv_out = InflatedConv3d(block_out_channels[0], out_channels, kernel_size=3, padding=1)
 
     def set_attention_slice(self, slice_size):
         r"""
