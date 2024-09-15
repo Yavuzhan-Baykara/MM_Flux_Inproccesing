@@ -415,8 +415,13 @@ def main(
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
                 print("noise shape         : ", noise.shape)            # Shape of noise
                 print("model_pred.shape    : ", model_pred.shape)     # Shape of the model prediction (model_pred)
-                if model_pred.shape != target.shape:
-                    model_pred = model_pred.view_as(target)
+                # Toplam eleman sayısını kontrol edin
+                print(f"model_pred num elements: {model_pred.numel()}")
+                print(f"target num elements: {target.numel()}")
+                
+                # Eğer toplam eleman sayıları eşitse ve yalnızca boyutlar farklıysa, yeniden şekillendirin
+                if model_pred.numel() == target.numel():
+                    model_pred = model_pred.view(target.shape)
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
 
             optimizer.zero_grad()
