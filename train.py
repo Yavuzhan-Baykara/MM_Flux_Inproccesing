@@ -290,8 +290,7 @@ def main(
 
     # DDP warpper
     unet.to(local_rank)
-    unet = DDP(unet, device_ids=[local_rank], output_device=local_rank)
-
+    unet = DDP(unet, device_ids=[local_rank], output_device=local_rank, find_unused_parameters=True)
     # We need to recalculate our total training steps as the size of the training dataloader may have changed.
     num_update_steps_per_epoch = math.ceil(len(train_dataloader) / gradient_accumulation_steps)
     # Afterwards we recalculate our number of training epochs
