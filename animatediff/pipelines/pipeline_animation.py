@@ -381,6 +381,17 @@ class AnimationPipeline(DiffusionPipeline):
 
         # Prepare latent variables
         num_channels_latents = self.unet.in_channels
+        print()
+        print(f"batch_size * num_videos_per_prompt: {batch_size * num_videos_per_prompt}")
+        print(f"num_channels_latents: {num_channels_latents}")
+        print(f"video_length: {video_length}")
+        print(f"height: {height}")
+        print(f"width: {width}")
+        print(f"text_embeddings.dtype: {text_embeddings.dtype}")
+        print(f"device: {device}")
+        print(f"generator: {generator}")
+        print(f"latents: {latents}")
+
         latents = self.prepare_latents(
             batch_size * num_videos_per_prompt,
             num_channels_latents,
