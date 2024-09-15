@@ -415,7 +415,8 @@ def main(
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
                 print("noise shape         : ", noise.shape)            # Shape of noise
                 print("model_pred.shape    : ", model_pred.shape)     # Shape of the model prediction (model_pred)
-
+                if model_pred.shape != target.shape:
+                    model_pred = model_pred.view_as(target)
                 loss = F.mse_loss(model_pred.float(), target.float(), reduction="mean")
 
             optimizer.zero_grad()
