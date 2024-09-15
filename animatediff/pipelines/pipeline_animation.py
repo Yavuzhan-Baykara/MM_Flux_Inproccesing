@@ -321,6 +321,7 @@ class AnimationPipeline(DiffusionPipeline):
 
         # scale the initial noise by the standard deviation required by the scheduler
         latents = latents * self.scheduler.init_noise_sigma
+        print("latents init noise sigma: ", latents.shape)
         return latents
 
     @torch.no_grad()
