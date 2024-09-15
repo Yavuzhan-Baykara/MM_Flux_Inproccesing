@@ -408,7 +408,7 @@ class AnimationPipeline(DiffusionPipeline):
             latents,
         )
         latents_dtype = latents.dtype
-
+        print("before latents: ", latents.shape)
         # Prepare extra step kwargs.
         extra_step_kwargs = self.prepare_extra_step_kwargs(generator, eta)
 
@@ -465,7 +465,7 @@ class AnimationPipeline(DiffusionPipeline):
 
                 # compute the previous noisy sample x_t -> x_t-1
                 latents = self.scheduler.step(noise_pred, t, latents, **extra_step_kwargs).prev_sample
-
+                print("compute noisy latents: ", latents.shape)
                 # call the callback, if provided
                 if i == len(timesteps) - 1 or ((i + 1) > num_warmup_steps and (i + 1) % self.scheduler.order == 0):
                     progress_bar.update()
