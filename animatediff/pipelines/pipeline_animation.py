@@ -310,8 +310,10 @@ class AnimationPipeline(DiffusionPipeline):
                     for i in range(batch_size)
                 ]
                 latents = torch.cat(latents, dim=0).to(device)
+                print("latents: ", latents.shape)
             else:
                 latents = torch.randn(shape, generator=generator, device=rand_device, dtype=dtype).to(device)
+                print("latents: ", latents.shape)
         else:
             if latents.shape != shape:
                 raise ValueError(f"Unexpected latents shape, got {latents.shape}, expected {shape}")
