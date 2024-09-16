@@ -324,8 +324,7 @@ def main(
         for step, batch in enumerate(train_dataloader):
             print("step:",step)
             print()
-            print("batch:",batch)
-            print("batch shape: ",batch.shape)
+            print("batch shape: ", batch['pixel_values'].shape)   
             
             if cfg_random_null_text:
                 batch['text'] = [name if random.random() > cfg_random_null_text_ratio else "" for name in batch['text']]
