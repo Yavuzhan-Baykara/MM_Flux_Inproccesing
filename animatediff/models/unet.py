@@ -43,7 +43,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         self,
         sample_size: Optional[int] = None,
         in_channels: int = 1,
-        out_channels: int = 16, #64, #4
+        out_channels: int = 64, #4
         center_input_sample: bool = False,
         flip_sin_to_cos: bool = True,
         freq_shift: int = 0,      
