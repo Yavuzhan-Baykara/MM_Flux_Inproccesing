@@ -253,7 +253,7 @@ class AnimationPipeline(DiffusionPipeline):
         video = []
         print("decode_latents:", latents.shape)
         print("second_latents:", latents[2].shape)
-        conv_transform = nn.Conv2d(in_channels=64, out_channels=16, kernel_size=1).to("cuda")
+        conv_transform = nn.Conv2d(in_channels=64, out_channels=16, kernel_size=3).to("cuda")
         latents = conv_transform(latents)
         print("Updated latents shape:", latents.shape)  # Bu aşamada latents'in kanal sayısı 16 olur
         for frame_idx in tqdm(range(latents.shape[0])):
