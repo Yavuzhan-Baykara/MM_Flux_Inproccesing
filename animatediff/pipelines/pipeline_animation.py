@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import numpy as np
 import torch
 from tqdm import tqdm
+from torch import nn
 
 from diffusers.utils import is_accelerate_available
 from packaging import version
