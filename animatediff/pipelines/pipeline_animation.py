@@ -251,6 +251,7 @@ class AnimationPipeline(DiffusionPipeline):
         # video = self.vae.decode(latents).sample
         video = []
         print("decode_latents:", latents.shape)
+        print("second_latents:", latents[2].shape)
         for frame_idx in tqdm(range(latents.shape[0])):
             print("decode_latents epoch: ", latents[frame_idx:frame_idx+1].shape)
             video.append(self.vae.decode(latents[frame_idx:frame_idx+1]).sample)
