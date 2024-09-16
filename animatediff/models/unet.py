@@ -96,7 +96,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
         # input
         print("in_channels:", in_channels, "block_out_channels", block_out_channels[0])
-        self.conv_in = InflatedConv3d(in_channels=64, out_channels=16, kernel_size=3, padding=(1, 1))
+        self.conv_in = InflatedConv3d(in_channels=in_channels, out_channels=block_out_channels[0], kernel_size=3, padding=(1, 1))
 
         # time
         self.time_proj = Timesteps(block_out_channels[0], flip_sin_to_cos, freq_shift)
