@@ -95,7 +95,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
         time_embed_dim = block_out_channels[0] * 4
 
         # input
-        print("in_channels:", in_channels, "block_out_channels", block_out_channels[0])
+        #print("in_channels:", in_channels, "block_out_channels", block_out_channels[0])
         self.conv_in = InflatedConv3d(in_channels=in_channels, out_channels=block_out_channels[0], kernel_size=3, padding=(1, 1))
 
         # time
@@ -243,14 +243,14 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
         # out
         if use_inflated_groupnorm:
-            print("conv_norm_out for", "block_out_channels[0]: ", block_out_channels[0], "norm_num_groups:", norm_num_groups, "norm_eps:", norm_eps)
+            #print("conv_norm_out for", "block_out_channels[0]: ", block_out_channels[0], "norm_num_groups:", norm_num_groups, "norm_eps:", norm_eps)
 
             self.conv_norm_out = InflatedGroupNorm(num_channels=block_out_channels[0], num_groups=norm_num_groups, eps=norm_eps)
         else:
-            print("conv_norm_out for 2", "block_out_channels[0]: ", block_out_channels[0], "norm_num_groups:", norm_num_groups, "norm_eps:", norm_eps)
+            #print("conv_norm_out for 2", "block_out_channels[0]: ", block_out_channels[0], "norm_num_groups:", norm_num_groups, "norm_eps:", norm_eps)
             self.conv_norm_out = nn.GroupNorm(num_channels=block_out_channels[0], num_groups=norm_num_groups, eps=norm_eps)
         self.conv_act = nn.SiLU()
-        print("conv_out for: ", "block_out_channels[0]: ", block_out_channels[0], "out_channels:", out_channels)
+        #print("conv_out for: ", "block_out_channels[0]: ", block_out_channels[0], "out_channels:", out_channels)
         self.conv_out = InflatedConv3d(block_out_channels[0], out_channels, kernel_size=3, padding=1)
 
     def set_attention_slice(self, slice_size):
@@ -407,7 +407,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
             emb = emb + class_emb
 
         # pre-process
-        print("Sample shape before conv_in:", sample.shape)
+        #print("Sample shape before conv_in:", sample.shape)
         sample = self.conv_in(sample)
 
         # down
@@ -471,12 +471,12 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
                 )
 
         # post-process
-        print(sample.shape)
+        #print(sample.shape)
         
         sample = self.conv_norm_out(sample)
         sample = self.conv_act(sample)
         sample = self.conv_out(sample)
-        print(sample.shape)
+        #print(sample.shape)
         if not return_dict:
             return (sample,)
 
