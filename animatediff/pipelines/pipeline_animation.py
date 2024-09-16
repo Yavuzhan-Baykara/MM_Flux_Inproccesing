@@ -252,7 +252,7 @@ class AnimationPipeline(DiffusionPipeline):
         video = []
         print("decode_latents:", latents.shape)
         for frame_idx in tqdm(range(latents.shape[0])):
-            print("decode_latents: ", latents[frame_idx:frame_idx+1].shape)
+            print("decode_latents epoch: ", latents[frame_idx:frame_idx+1].shape)
             video.append(self.vae.decode(latents[frame_idx:frame_idx+1]).sample)
         video = torch.cat(video)
         video = rearrange(video, "(b f) c h w -> b c f h w", f=video_length)
