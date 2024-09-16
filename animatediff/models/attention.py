@@ -107,17 +107,17 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             hidden_states = self.proj_in(hidden_states)
             inner_dim = hidden_states.shape[1]
             #deneme
-            print("batch: ", str(batch))
-            print("height * weight,: ", str(height * weight,))
-            print("inner_dim: ", str(inner_dim))
+            #print("batch: ", str(batch))
+            #print("height * weight,: ", str(height * weight,))
+            #print("inner_dim: ", str(inner_dim))
             
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
         else:
             inner_dim = hidden_states.shape[1]
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
             hidden_states = self.proj_in(hidden_states)
-        print(f"hidden_states shape: {hidden_states.shape}")
-        print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
+        #print(f"hidden_states shape: {hidden_states.shape}")
+        #print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
         # Blocks
         for block in self.transformer_blocks:
             hidden_states = block(
@@ -184,7 +184,7 @@ class BasicTransformerBlock(nn.Module):
                 upcast_attention=upcast_attention,
             )
         else:
-            print(attention_head_dim)
+            #print(attention_head_dim)
             self.attn1 = Attention(
                 query_dim=dim,
                 heads=num_attention_heads,
@@ -193,7 +193,7 @@ class BasicTransformerBlock(nn.Module):
                 bias=attention_bias,
                 upcast_attention=upcast_attention,
             )
-        print("dim: ", str(dim))
+        #print("dim: ", str(dim))
         self.norm1 = AdaLayerNorm(dim, num_embeds_ada_norm) if self.use_ada_layer_norm else nn.LayerNorm(dim)
 
         # Cross-Attn
@@ -286,17 +286,17 @@ class BasicTransformerBlock(nn.Module):
             norm_hidden_states = (
                 self.norm2(hidden_states, timestep) if self.use_ada_layer_norm else self.norm2(hidden_states)
             )
-            print("timestep", str(timestep))
-            print("norm_hidden_states: shape", str(norm_hidden_states.shape))
-            print(f"hidden_states shape: {hidden_states.shape}")
-            print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
+            #print("timestep", str(timestep))
+            #print("norm_hidden_states: shape", str(norm_hidden_states.shape))
+            #print(f"hidden_states shape: {hidden_states.shape}")
+            #print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
             hidden_states = (
                 self.attn2(
                     norm_hidden_states, encoder_hidden_states=encoder_hidden_states, attention_mask=attention_mask
                 )
                 + hidden_states
             )
-            print(f"After attn2 hidden_states shape: {hidden_states.shape}")
+            #print(f"After attn2 hidden_states shape: {hidden_states.shape}")
 
 
         # Feed-forward
