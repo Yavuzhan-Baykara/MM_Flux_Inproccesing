@@ -322,9 +322,9 @@ def main(
         unet.train()
         
         for step, batch in enumerate(train_dataloader):
-            print("step:",step)
-            print()
-            print("batch shape: ", batch['pixel_values'].shape)   
+            #print("step:",step)
+            #print()
+            #print("batch shape: ", batch['pixel_values'].shape)   
             
             if cfg_random_null_text:
                 batch['text'] = [name if random.random() > cfg_random_null_text_ratio else "" for name in batch['text']]
@@ -347,29 +347,29 @@ def main(
             # Convert videos to latent space            
             pixel_values = batch["pixel_values"].to(local_rank)
             video_length = pixel_values.shape[1]
-            print("video_length A: ", str(video_length))
+            #print("video_length A: ", str(video_length))
             conv_transform = nn.Conv3d(16, 64, kernel_size=1).to("cuda")
             with torch.no_grad():
                 if not image_finetune:
                     pixel_values = rearrange(pixel_values, "b f c h w -> (b f) c h w")
-                    print()
-                    print("pixel_values shape: ", str(pixel_values.shape))
+                    #print()
+                    #print("pixel_values shape: ", str(pixel_values.shape))
                     latents = vae.encode(pixel_values).latent_dist
-                    print()
-                    print("latents2 : ", str(latents))
+                    #print()
+                    #print("latents2 : ", str(latents))
                     latents = latents.sample()
-                    print()
-                    print("latents3 shape : ", str(latents.shape))
+                    #print()
+                    #print("latents3 shape : ", str(latents.shape))
                     latents = rearrange(latents, "(b f) c h w -> b c f h w", f=video_length)
-                    print()
-                    print("latents4 shape : ", str(latents.shape))
+                    #print()
+                    #print("latents4 shape : ", str(latents.shape))
                     latents = conv_transform(latents)
-                    print("Updated latents shape:", latents.shape)
+                    #print("Updated latents shape:", latents.shape)
                 else:
                     latents = vae.encode(pixel_values).latent_dist
-                    print("latents5 : ", str(latents))
+                    #print("latents5 : ", str(latents))
                     latents = latents.sample()
-                    print("latents6 : ", str(latents))
+                    #print("latents6 : ", str(latents))
                     
 
                 latents = latents * 0.18215
@@ -385,17 +385,17 @@ def main(
             # Add noise to the latents according to the noise magnitude at each timestep
             # (this is the forward diffusion process)
             noisy_latents = noise_scheduler.add_noise(latents, noise, timesteps)
-            print()
-            print("latents shape : ", str(latents.shape))
-            print("noise shape : ", str(noise.shape))
-            print("timesteps shape : ", str(timesteps.shape))
+            #print()
+            #print("latents shape : ", str(latents.shape))
+            #print("noise shape : ", str(noise.shape))
+            #print("timesteps shape : ", str(timesteps.shape))
             
             # Get the text embedding for conditioning
             with torch.no_grad():
                 prompt_ids = tokenizer(
                     batch['text'], max_length=tokenizer.model_max_length, padding="max_length", truncation=True, return_tensors="pt"
                 ).input_ids.to(latents.device)
-                print("prompt_ids shape: ", str(prompt_ids.shape))
+                #print("prompt_ids shape: ", str(prompt_ids.shape))
                 encoder_hidden_states = text_encoder(prompt_ids)[0]
                 
             # Get the target for loss depending on the prediction type
@@ -409,18 +409,18 @@ def main(
             # Predict the noise residual and compute loss
             # Mixed-precision training
             with torch.cuda.amp.autocast(enabled=mixed_precision_training, dtype=torch.float32):
-                print()
-                print("noisy_latents.shape:", str(noisy_latents.shape))
-                print("timesteps.shape:",str(timesteps.shape))
-                print("encoder_hidden_states.shape:", str(encoder_hidden_states.shape))
+                #print()
+                #print("noisy_latents.shape:", str(noisy_latents.shape))
+                #print("timesteps.shape:",str(timesteps.shape))
+                #print("encoder_hidden_states.shape:", str(encoder_hidden_states.shape))
                 # Encoder hidden states projekte edilerek attention boyutuna indirgeniyor
                 #encoder_hidden_states = torch.nn.Linear(768, 1280).to(encoder_hidden_states.device)(encoder_hidden_states)
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
-                print("noise shape         : ", noise.shape)            # Shape of noise
-                print("model_pred.shape    : ", model_pred.shape)     # Shape of the model prediction (model_pred)
+                #print("noise shape         : ", noise.shape)            # Shape of noise
+                #print("model_pred.shape    : ", model_pred.shape)     # Shape of the model prediction (model_pred)
                 # Toplam eleman sayısını kontrol edin
-                print(f"model_pred num elements: {model_pred.numel()}")
-                print(f"target num elements: {target.numel()}")
+                #print(f"model_pred num elements: {model_pred.numel()}")
+                #print(f"target num elements: {target.numel()}")
                 
                 # Eğer toplam eleman sayıları eşitse ve yalnızca boyutlar farklıysa, yeniden şekillendirin
                 if model_pred.numel() == target.numel():
@@ -491,8 +491,8 @@ def main(
                             width        = width,
                             **validation_data,
                         ).videos
-                        print()
-                        print("train_data.sample_n_frames A: ", str(train_data.sample_n_frames))
+                        #print()
+                        #print("train_data.sample_n_frames A: ", str(train_data.sample_n_frames))
                         save_videos_grid(sample, f"{output_dir}/samples/sample-{global_step}/{idx}.gif")
                         samples.append(sample)
                         
