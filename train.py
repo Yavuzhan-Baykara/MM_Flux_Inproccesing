@@ -363,7 +363,7 @@ def main(
                     latents = rearrange(latents, "(b f) c h w -> b c f h w", f=video_length)
                     #print()
                     #print("latents4 shape : ", str(latents.shape))
-                    latents = conv_transform(latents)
+                    #latents = conv_transform(latents)
                     #print("Updated latents shape:", latents.shape)
                 else:
                     latents = vae.encode(pixel_values).latent_dist
