@@ -348,7 +348,7 @@ def main(
             pixel_values = batch["pixel_values"].to(local_rank)
             video_length = pixel_values.shape[1]
             #print("video_length A: ", str(video_length))
-            conv_transform = nn.Conv3d(16, 64, kernel_size=3).to("cuda")
+            #conv_transform = nn.Conv3d(16, 64, kernel_size=3).to("cuda")
             with torch.no_grad():
                 if not image_finetune:
                     pixel_values = rearrange(pixel_values, "b f c h w -> (b f) c h w")
