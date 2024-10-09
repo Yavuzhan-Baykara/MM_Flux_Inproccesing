@@ -64,7 +64,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             self.proj_in = nn.Linear(in_channels, inner_dim)
         else:
             self.proj_in = nn.Conv2d(in_channels, inner_dim, kernel_size=1, stride=1, padding=0)
-
+        print("proj_in", proj_in)
         # Define transformers blocks
         self.transformer_blocks = nn.ModuleList(
             [
@@ -86,13 +86,14 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
                 for d in range(num_layers)
             ]
         )
-
+        print("self.transformer_blocks", self.transformer_blocks)
         # 4. Define output layers
         if use_linear_projection:
             self.proj_out = nn.Linear(in_channels, inner_dim)
         else:
             self.proj_out = nn.Conv2d(inner_dim, in_channels, kernel_size=1, stride=1, padding=0)
-
+        print("self.proj_out", self.proj_out)
+        
     def forward(self, hidden_states, encoder_hidden_states=None, timestep=None, return_dict: bool = True):
         # Input
         assert hidden_states.dim() == 5, f"Expected hidden_states to have ndim=5, but got ndim={hidden_states.dim()}."
@@ -101,13 +102,13 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         encoder_hidden_states = repeat(encoder_hidden_states, 'b n c -> (b f) n c', f=video_length)
         batch, channel, height, weight = hidden_states.shape
         residual = hidden_states
-
+        print("hidden_states.shape", hidden_states.shape)
+        
         hidden_states = self.norm(hidden_states)
         
         if not self.use_linear_projection:
             hidden_states = self.proj_in(hidden_states)
             inner_dim = hidden_states.shape[1]
-            #deneme
             #print("batch: ", str(batch))
             #print("height * weight,: ", str(height * weight,))
             #print("inner_dim: ", str(inner_dim))
@@ -117,8 +118,8 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             inner_dim = hidden_states.shape[1]
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
             hidden_states = self.proj_in(hidden_states)
-        #print(f"hidden_states shape: {hidden_states.shape}")
-        #print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
+        print(f"hidden_states shape: {hidden_states.shape}")
+        print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
         # Blocks
         for block in self.transformer_blocks:
             hidden_states = block(
@@ -142,6 +143,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
 
         output = hidden_states + residual
 
+        priint("output.shape", output.shape)
         output = rearrange(output, "(b f) c h w -> b c f h w", f=video_length)
         if not return_dict:
             return (output,)
