@@ -407,7 +407,8 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
             emb = emb + class_emb
 
         # pre-process
-        #print("Sample shape before conv_in:", sample.shape)
+        print("Sample shape before conv_in:", sample.shape)
+        print("out_channels:", out_channels)
         sample = self.conv_in(sample)
 
         # down
