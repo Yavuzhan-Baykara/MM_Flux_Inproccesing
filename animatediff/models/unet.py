@@ -96,6 +96,7 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
         # input
         #print("in_channels:", in_channels, "block_out_channels", block_out_channels[0])
+        print("out_channels:", out_channels)
         self.conv_in = InflatedConv3d(in_channels=in_channels, out_channels=block_out_channels[0], kernel_size=3, padding=(1, 1))
 
         # time
@@ -408,7 +409,6 @@ class UNet3DConditionModel(ModelMixin, ConfigMixin):
 
         # pre-process
         print("Sample shape before conv_in:", sample.shape)
-        print("out_channels:", out_channels)
         sample = self.conv_in(sample)
 
         # down
