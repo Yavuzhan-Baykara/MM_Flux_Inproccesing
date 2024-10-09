@@ -334,7 +334,7 @@ def main(
                 pixel_values, texts = batch['pixel_values'].cpu(), batch['text']
                 if not image_finetune:
                     pixel_values = rearrange(pixel_values, "b f c h w -> b c f h w")
-                    print("pixel_values sahpe:", str(pixel_values.shaoe))
+                    print("pixel_values sahpe:", str(pixel_values.shape))
                     
                     for idx, (pixel_value, text) in enumerate(zip(pixel_values, texts)):
                         pixel_value = pixel_value[None, ...]
