@@ -64,7 +64,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             self.proj_in = nn.Linear(in_channels, inner_dim)
         else:
             self.proj_in = nn.Conv2d(in_channels, inner_dim, kernel_size=1, stride=1, padding=0)
-        print("proj_in", proj_in)
+        print("proj_in", self.proj_in)
         # Define transformers blocks
         self.transformer_blocks = nn.ModuleList(
             [
