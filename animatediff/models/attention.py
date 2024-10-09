@@ -57,6 +57,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
 
         # Define input layers
         self.in_channels = in_channels
+        print("self.in_channels:", self.in_channels)
 
         self.norm = torch.nn.GroupNorm(num_groups=norm_num_groups, num_channels=in_channels, eps=1e-6, affine=True)
         if use_linear_projection:
