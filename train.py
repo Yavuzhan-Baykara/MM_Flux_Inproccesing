@@ -338,6 +338,7 @@ def main(
                     
                     for idx, (pixel_value, text) in enumerate(zip(pixel_values, texts)):
                         pixel_value = pixel_value[None, ...]
+                        print("pixel_value:", str(pixel_value))
                         save_videos_grid(pixel_value, f"{output_dir}/sanity_check/{'-'.join(text.replace('/', '').split()[:10]) if not text == '' else f'{global_rank}-{idx}'}.gif", rescale=True)
                 else:
                     for idx, (pixel_value, text) in enumerate(zip(pixel_values, texts)):
@@ -347,8 +348,10 @@ def main(
                     
             ### >>>> Training >>>> ###
             
-            # Convert videos to latent space            
+            # Convert videos to latent space        
+            print("pixel_values sahpe:", str(pixel_values.shape))
             pixel_values = batch["pixel_values"].to(local_rank)
+            print("pixel_values sahpe:", str(pixel_values.shape))
             video_length = pixel_values.shape[1]
             #print("video_length A: ", str(video_length))
             #conv_transform = nn.Conv3d(16, 64, kernel_size=3).to("cuda")
