@@ -33,7 +33,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
     @register_to_config
     def __init__(
         self,
-        num_attention_heads: int = 16,
+        num_attention_heads: int = 64, # 16
         attention_head_dim: int = 88,
         in_channels: Optional[int] = None,
         num_layers: int = 1,
