@@ -13,6 +13,7 @@ from diffusers.utils import BaseOutput
 from diffusers.utils.import_utils import is_xformers_available
 from diffusers.models.attention import FeedForward, AdaLayerNorm
 from diffusers.models.attention_processor import Attention
+import wandb
 
 from einops import rearrange, repeat
 import pdb
