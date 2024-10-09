@@ -143,7 +143,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
 
         output = hidden_states + residual
 
-        priint("output.shape", output.shape)
+        print("output.shape", output.shape)
         output = rearrange(output, "(b f) c h w -> b c f h w", f=video_length)
         if not return_dict:
             return (output,)
