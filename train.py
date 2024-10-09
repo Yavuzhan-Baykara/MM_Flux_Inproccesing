@@ -334,13 +334,15 @@ def main(
                 pixel_values, texts = batch['pixel_values'].cpu(), batch['text']
                 if not image_finetune:
                     pixel_values = rearrange(pixel_values, "b f c h w -> b c f h w")
+                    print("pixel_values:", pixel_value)
+                    
                     for idx, (pixel_value, text) in enumerate(zip(pixel_values, texts)):
                         pixel_value = pixel_value[None, ...]
                         save_videos_grid(pixel_value, f"{output_dir}/sanity_check/{'-'.join(text.replace('/', '').split()[:10]) if not text == '' else f'{global_rank}-{idx}'}.gif", rescale=True)
                 else:
                     for idx, (pixel_value, text) in enumerate(zip(pixel_values, texts)):
                         pixel_value = pixel_value / 2. + 0.5
-                        print(pixel_value.shape)
+                        print("pixel_value:", pixel_value)
                         torchvision.utils.save_image(pixel_value, f"{output_dir}/sanity_check/{'-'.join(text.replace('/', '').split()[:10]) if not text == '' else f'{global_rank}-{idx}'}.png")
                     
             ### >>>> Training >>>> ###
