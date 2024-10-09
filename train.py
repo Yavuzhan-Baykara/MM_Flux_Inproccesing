@@ -409,10 +409,10 @@ def main(
             # Predict the noise residual and compute loss
             # Mixed-precision training
             with torch.cuda.amp.autocast(enabled=mixed_precision_training, dtype=torch.float32):
-                #print()
-                #print("noisy_latents.shape:", str(noisy_latents.shape))
-                #print("timesteps.shape:",str(timesteps.shape))
-                #print("encoder_hidden_states.shape:", str(encoder_hidden_states.shape))
+                print()
+                print("noisy_latents.shape:", str(noisy_latents.shape))
+                print("timesteps.shape:",str(timesteps.shape))
+                print("encoder_hidden_states.shape:", str(encoder_hidden_states.shape))
                 # Encoder hidden states projekte edilerek attention boyutuna indirgeniyor
                 #encoder_hidden_states = torch.nn.Linear(768, 1280).to(encoder_hidden_states.device)(encoder_hidden_states)
                 model_pred = unet(noisy_latents, timesteps, encoder_hidden_states).sample
