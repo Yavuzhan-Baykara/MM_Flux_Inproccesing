@@ -97,7 +97,9 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         print("self.proj_out:", self.proj_out)
 
     def forward(self, hidden_states, encoder_hidden_states=None, timestep=None, return_dict: bool = True):
-        print("Starting forward pass", flush=True)
+        from IPython.display import display
+
+        display("Starting forward pass")
         assert hidden_states.dim() == 5, f"Expected hidden_states to have ndim=5, but got ndim={hidden_states.dim()}."
 
         video_length = hidden_states.shape[2]
