@@ -97,7 +97,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         print("self.proj_out:", self.proj_out)
 
     def forward(self, hidden_states, encoder_hidden_states=None, timestep=None, return_dict: bool = True):
-        print("Starting forward pass")
+        print("Starting forward pass", flush=True)
         assert hidden_states.dim() == 5, f"Expected hidden_states to have ndim=5, but got ndim={hidden_states.dim()}."
 
         video_length = hidden_states.shape[2]
@@ -108,22 +108,22 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         residual = hidden_states
 
         # Print shapes and move them to CPU if necessary for debugging
-        print(f"hidden_states shape (before norm): {hidden_states.shape}")
-        print(f"encoder_hidden_states shape (before norm): {encoder_hidden_states.shape}")
+        print(f"hidden_states shape (before norm): {hidden_states.shape}", flush=True)
+        print(f"encoder_hidden_states shape (before norm): {encoder_hidden_states.shape}", flush=True)
         
         hidden_states = self.norm(hidden_states)
         
         if not self.use_linear_projection:
             hidden_states = self.proj_in(hidden_states)
             inner_dim = hidden_states.shape[1]
-            print(f"hidden_states shape (after proj_in): {hidden_states.shape}")
+            print(f"hidden_states shape (after proj_in): {hidden_states.shape}", flush=True)
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * width, inner_dim)
         else:
             inner_dim = hidden_states.shape[1]
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * width, inner_dim)
             hidden_states = self.proj_in(hidden_states)
-        print(f"hidden_states shape (after reshape): {hidden_states.shape}")
-        print(f"encoder_hidden_states shape (after repeat): {encoder_hidden_states.shape}")
+        print(f"hidden_states shape (after reshape): {hidden_states.shape}", flush=True)
+        print(f"encoder_hidden_states shape (after repeat): {encoder_hidden_states.shape}", flush=True)
 
         # Transformer blocks
         for block in self.transformer_blocks:
@@ -148,10 +148,10 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
 
         output = hidden_states + residual
 
-        print(f"output.shape (after residual): {output.shape}")
+        print(f"output.shape (after residual): {output.shape}", flush=True)
         output = rearrange(output, "(b f) c h w -> b c f h w", f=video_length)
         
-        print(f"final output shape: {output.shape}")
+        print(f"final output shape: {output.shape}", flush=True)
 
         if not return_dict:
             return (output,)
