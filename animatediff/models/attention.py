@@ -107,6 +107,8 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         })
 
     def forward(self, hidden_states, encoder_hidden_states=None, timestep=None, return_dict: bool = True):
+        self.step_counter += 1
+        
         # Extract video length and rearrange hidden states
         video_length = hidden_states.shape[2]
         hidden_states = rearrange(hidden_states, "b c f h w -> (b f) c h w")
@@ -115,16 +117,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         # Get shape details
         batch, channel, height, weight = hidden_states.shape
         residual = hidden_states.clone()  # Keep a copy of the hidden states before modification
-        
-        # Log these values at the start of the forward pass
-        wandb.log({
-            "Transformer3DModel.forward.hidden_states_shape_initial": hidden_states.shape,
-            "Transformer3DModel.forward.batch": batch,
-            "Transformer3DModel.forward.channel": channel,
-            "Transformer3DModel.forward.height": height,
-            "Transformer3DModel.forward.weight": weight,
-        })
-        
+
         # Apply normalization and input projection
         hidden_states = self.norm(hidden_states)
         if not self.use_linear_projection:
@@ -135,11 +128,6 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             inner_dim = hidden_states.shape[1]
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
             hidden_states = self.proj_in(hidden_states)
-        
-        # Log after normalization and projection
-        wandb.log({
-            "Transformer3DModel.forward.hidden_states_shape_after_norm_proj": hidden_states.shape,
-        })
 
         # Process through transformer blocks
         for block in self.transformer_blocks:
@@ -149,11 +137,6 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
                 timestep=timestep,
                 video_length=video_length
             )
-
-        # Log after passing through transformer blocks
-        wandb.log({
-            "Transformer3DModel.forward.hidden_states_shape_after_transformer_blocks": hidden_states.shape,
-        })
 
         # Apply output projection
         if not self.use_linear_projection:
@@ -166,12 +149,17 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         output = hidden_states + residual  # Add residual connection
         output = rearrange(output, "(b f) c h w -> b c f h w", f=video_length)
 
-        # Log final output
-        wandb.log({
-            "Transformer3DModel.forward.output_shape": output.shape,
-            "Transformer3DModel.forward.output_sample": output[0, :, :, :, :].detach().cpu().numpy(),  # Optional: log a sample of the output
-            "Transformer3DModel.forward.residual_shape": residual.shape,
-        })
+        # Log every 100 steps
+        if self.step_counter % self.log_every_n_steps == 0:
+            wandb.log({
+                "Transformer3DModel.forward.hidden_states_shape_initial": hidden_states.shape,
+                "Transformer3DModel.forward.batch": batch,
+                "Transformer3DModel.forward.channel": channel,
+                "Transformer3DModel.forward.height": height,
+                "Transformer3DModel.forward.weight": weight,
+                "Transformer3DModel.forward.output_shape": output.shape,
+                "Transformer3DModel.forward.residual_shape": residual.shape,
+            })
 
         # Return the output
         if not return_dict:
