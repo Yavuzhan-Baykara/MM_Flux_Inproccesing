@@ -103,23 +103,29 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             "Transformer3DModel.use_linear_projection": use_linear_projection,
             "Transformer3DModel.only_cross_attention": only_cross_attention,
             "Transformer3DModel.upcast_attention": upcast_attention,
+            
         })
 
     def forward(self, hidden_states, encoder_hidden_states=None, timestep=None, return_dict: bool = True):
-        # Rearranging input for processing
+        # Extract video length and rearrange hidden states
         video_length = hidden_states.shape[2]
         hidden_states = rearrange(hidden_states, "b c f h w -> (b f) c h w")
         encoder_hidden_states = repeat(encoder_hidden_states, 'b n c -> (b f) n c', f=video_length)
 
+        # Get shape details
         batch, channel, height, weight = hidden_states.shape
-        residual = hidden_states
-
-        # Log before normalization and projection
+        residual = hidden_states.clone()  # Keep a copy of the hidden states before modification
+        
+        # Log these values at the start of the forward pass
         wandb.log({
-            "Transformer3DModel.forward.hidden_states_before_norm_proj": hidden_states.shape,
-            "Transformer3DModel.forward.encoder_hidden_states": encoder_hidden_states.shape,
+            "Transformer3DModel.forward.hidden_states_shape_initial": hidden_states.shape,
+            "Transformer3DModel.forward.batch": batch,
+            "Transformer3DModel.forward.channel": channel,
+            "Transformer3DModel.forward.height": height,
+            "Transformer3DModel.forward.weight": weight,
         })
-
+        
+        # Apply normalization and input projection
         hidden_states = self.norm(hidden_states)
         if not self.use_linear_projection:
             hidden_states = self.proj_in(hidden_states)
@@ -129,13 +135,13 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             inner_dim = hidden_states.shape[1]
             hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
             hidden_states = self.proj_in(hidden_states)
-
+        
         # Log after normalization and projection
         wandb.log({
-            "Transformer3DModel.forward.hidden_states_after_norm_proj": hidden_states.shape,
+            "Transformer3DModel.forward.hidden_states_shape_after_norm_proj": hidden_states.shape,
         })
 
-        # Transformer blocks
+        # Process through transformer blocks
         for block in self.transformer_blocks:
             hidden_states = block(
                 hidden_states,
@@ -144,12 +150,12 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
                 video_length=video_length
             )
 
-        # Log after transformer blocks
+        # Log after passing through transformer blocks
         wandb.log({
-            "Transformer3DModel.forward.hidden_states_after_transformer_blocks": hidden_states.shape,
+            "Transformer3DModel.forward.hidden_states_shape_after_transformer_blocks": hidden_states.shape,
         })
 
-        # Output projection
+        # Apply output projection
         if not self.use_linear_projection:
             hidden_states = hidden_states.reshape(batch, height, weight, inner_dim).permute(0, 3, 1, 2).contiguous()
             hidden_states = self.proj_out(hidden_states)
@@ -157,14 +163,17 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             hidden_states = self.proj_out(hidden_states)
             hidden_states = hidden_states.reshape(batch, height, weight, inner_dim).permute(0, 3, 1, 2).contiguous()
 
-        output = hidden_states + residual
+        output = hidden_states + residual  # Add residual connection
         output = rearrange(output, "(b f) c h w -> b c f h w", f=video_length)
 
         # Log final output
         wandb.log({
             "Transformer3DModel.forward.output_shape": output.shape,
+            "Transformer3DModel.forward.output_sample": output[0, :, :, :, :].detach().cpu().numpy(),  # Optional: log a sample of the output
+            "Transformer3DModel.forward.residual_shape": residual.shape,
         })
 
+        # Return the output
         if not return_dict:
             return (output,)
 
