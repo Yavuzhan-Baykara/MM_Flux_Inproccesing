@@ -33,7 +33,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
     @register_to_config
     def __init__(
         self,
-        num_attention_heads: int = 64, # 16
+        num_attention_heads: int = 64,  # 16
         attention_head_dim: int = 88,
         in_channels: Optional[int] = None,
         num_layers: int = 1,
@@ -50,6 +50,7 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         unet_use_temporal_attention=None,
     ):
         super().__init__()
+        print("Initializing Transformer3DModel")
         self.use_linear_projection = use_linear_projection
         self.num_attention_heads = num_attention_heads
         self.attention_head_dim = attention_head_dim
@@ -64,8 +65,9 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
             self.proj_in = nn.Linear(in_channels, inner_dim)
         else:
             self.proj_in = nn.Conv2d(in_channels, inner_dim, kernel_size=1, stride=1, padding=0)
-        print("proj_in", self.proj_in)
-        # Define transformers blocks
+        print("proj_in:", self.proj_in)
+
+        # Define transformer blocks
         self.transformer_blocks = nn.ModuleList(
             [
                 BasicTransformerBlock(
@@ -79,48 +81,51 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
                     attention_bias=attention_bias,
                     only_cross_attention=only_cross_attention,
                     upcast_attention=upcast_attention,
-
                     unet_use_cross_frame_attention=unet_use_cross_frame_attention,
                     unet_use_temporal_attention=unet_use_temporal_attention,
                 )
                 for d in range(num_layers)
             ]
         )
-        print("self.transformer_blocks", self.transformer_blocks)
-        # 4. Define output layers
+        print("self.transformer_blocks:", self.transformer_blocks)
+
+        # Define output layers
         if use_linear_projection:
             self.proj_out = nn.Linear(in_channels, inner_dim)
         else:
             self.proj_out = nn.Conv2d(inner_dim, in_channels, kernel_size=1, stride=1, padding=0)
-        print("self.proj_out", self.proj_out)
-        
+        print("self.proj_out:", self.proj_out)
+
     def forward(self, hidden_states, encoder_hidden_states=None, timestep=None, return_dict: bool = True):
-        # Input
+        print("Starting forward pass")
         assert hidden_states.dim() == 5, f"Expected hidden_states to have ndim=5, but got ndim={hidden_states.dim()}."
+
         video_length = hidden_states.shape[2]
         hidden_states = rearrange(hidden_states, "b c f h w -> (b f) c h w")
         encoder_hidden_states = repeat(encoder_hidden_states, 'b n c -> (b f) n c', f=video_length)
-        batch, channel, height, weight = hidden_states.shape
+
+        batch, channel, height, width = hidden_states.shape
         residual = hidden_states
-        print("hidden_states.shape", hidden_states.shape)
+
+        # Print shapes and move them to CPU if necessary for debugging
+        print(f"hidden_states shape (before norm): {hidden_states.shape}")
+        print(f"encoder_hidden_states shape (before norm): {encoder_hidden_states.shape}")
         
         hidden_states = self.norm(hidden_states)
         
         if not self.use_linear_projection:
             hidden_states = self.proj_in(hidden_states)
             inner_dim = hidden_states.shape[1]
-            #print("batch: ", str(batch))
-            #print("height * weight,: ", str(height * weight,))
-            #print("inner_dim: ", str(inner_dim))
-            
-            hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
+            print(f"hidden_states shape (after proj_in): {hidden_states.shape}")
+            hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * width, inner_dim)
         else:
             inner_dim = hidden_states.shape[1]
-            hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * weight, inner_dim)
+            hidden_states = hidden_states.permute(0, 2, 3, 1).reshape(batch, height * width, inner_dim)
             hidden_states = self.proj_in(hidden_states)
-        print(f"hidden_states shape: {hidden_states.shape}")
-        print(f"encoder_hidden_states shape: {encoder_hidden_states.shape}")
-        # Blocks
+        print(f"hidden_states shape (after reshape): {hidden_states.shape}")
+        print(f"encoder_hidden_states shape (after repeat): {encoder_hidden_states.shape}")
+
+        # Transformer blocks
         for block in self.transformer_blocks:
             hidden_states = block(
                 hidden_states,
@@ -132,19 +137,22 @@ class Transformer3DModel(ModelMixin, ConfigMixin):
         # Output
         if not self.use_linear_projection:
             hidden_states = (
-                hidden_states.reshape(batch, height, weight, inner_dim).permute(0, 3, 1, 2).contiguous()
+                hidden_states.reshape(batch, height, width, inner_dim).permute(0, 3, 1, 2).contiguous()
             )
             hidden_states = self.proj_out(hidden_states)
         else:
             hidden_states = self.proj_out(hidden_states)
             hidden_states = (
-                hidden_states.reshape(batch, height, weight, inner_dim).permute(0, 3, 1, 2).contiguous()
+                hidden_states.reshape(batch, height, width, inner_dim).permute(0, 3, 1, 2).contiguous()
             )
 
         output = hidden_states + residual
 
-        print("output.shape", output.shape)
+        print(f"output.shape (after residual): {output.shape}")
         output = rearrange(output, "(b f) c h w -> b c f h w", f=video_length)
+        
+        print(f"final output shape: {output.shape}")
+
         if not return_dict:
             return (output,)
 
